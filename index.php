@@ -297,7 +297,35 @@ echo "</table>";
         }
         echo "</table>";
     } elseif ($number == 13) {
-        // Logic for number 13
+       $sql = "SELECT
+        Log.LogDate,
+        Log.Subject,
+        Log.BodyOfEmail
+    FROM
+        Log
+    JOIN
+        Schedule ON Log.FacilityName = Schedule.FacilityName COLLATE utf8mb3_general_ci
+                    AND Log.FacilityPostalCode = Schedule.FacilityPostalCode
+    WHERE
+        Log.Subject LIKE '%cancellation%' AND
+        Schedule.ScheduleDate BETWEEN '2024-03-01' AND '2024-04-01' AND
+        Log.FacilityName = 'Hospital Maisonneuve Rosemont'
+    ORDER BY
+        Log.LogDate DESC;";
+
+        $result = $conn->query($sql);
+
+        echo "<table border='1'>";
+        echo "<tr><th>LogDate</th><th>Subject</th><th>BodyOfEmail</th></tr>";
+
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            echo "<tr>";
+            echo "<td>" . $row['LogDate'] . "</td>";
+            echo "<td>" . $row['Subject'] . "</td>";
+            echo "<td>" . $row['BodyOfEmail'] . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
     } elseif ($number == 14) {
 
         $sql = "SELECT Facility.Name, FirstName, LastName, EmployeeRole, COUNT(IsPrimaryResidence) AS NbOfSecondary
@@ -638,7 +666,21 @@ echo "</table>";
             GROUP BY Person.SSN
             ORDER BY FacilityName, SecondaryResidenceCount;
         </li>
-        <li></li>
+        <li>SELECT
+        Log.LogDate,
+        Log.Subject,
+        Log.BodyOfEmail
+    FROM
+        Log
+    JOIN
+        Schedule ON Log.FacilityName = Schedule.FacilityName COLLATE utf8mb3_general_ci
+                    AND Log.FacilityPostalCode = Schedule.FacilityPostalCode
+    WHERE
+        Log.Subject LIKE '%cancellation%' AND
+        Schedule.ScheduleDate BETWEEN '2024-03-01' AND '2024-04-01' AND
+        Log.FacilityName = 'Hospital Maisonneuve Rosemont'
+    ORDER BY
+        Log.LogDate DESC;</li>
         <li>SELECT Facility.Name, FirstName, LastName, EmployeeRole, COUNT(IsPrimaryResidence) AS NbOfSecondary
             FROM PersonResidence
             JOIN Person ON PersonResidence.SSN = Person.SSN
